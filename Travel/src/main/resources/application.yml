@@ -3,9 +3,9 @@ server:
 spring:
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://rm-m5eaj14505m3q4v4gdo.mysql.rds.aliyuncs.com/travel
-    username: kangwen
-    password: Kang1234
+    url: jdbc:mysql://localhost/travel
+    username: root
+    password: 123456
   thymeleaf:
     cache: false
 mybatis:
