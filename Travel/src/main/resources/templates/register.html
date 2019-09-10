@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>注册</title>
+        <link rel="stylesheet" type="text/css" href="statics/css/common.css">
+        <link rel="stylesheet" href="statics/css/register.css">
+		<link rel="stylesheet" href="statics/css/bootstrap.min.css">
+		<style>
+			td{white-space: nowrap;}
+		</style>
+		<!--导入jquery-->
+		<script src="statics/js/jquery-3.3.1.js"></script>
+		<script src="statics/js/bootstrap.js"></script>
+		<script>
+			var aaa;
+			//校验用户名
+			function username(){
+				//获取username的值
+				var username = $("#username").val();
+				//根据正则表达表达式，返回结果
+
+				if (/^\w{3,20}$/.test(username)&&username!=""){
+					$.ajax({
+						url: '/user/isUsername',
+						type: 'GET',
+						dataType: 'json',
+						data :{"username":username},
+						sync:false,
+						success: function (data) {
+							if(data.flag){
+								$("#username").css("border","");
+
+								$("#td_error").attr("class","glyphicon glyphicon-ok");
+								$("#td_error").css({"display":"","color":"green"});
+								$("#td_error").text("用户名可用");
+								aaa=true;
+							}else {
+								$("#username").css("border","1px solid red");
+
+								$("#td_error").attr("class","glyphicon glyphicon-remove");
+								$("#td_error").css({"display":"","color":"red"});
+								$("#td_error").text("用户名已被使用");
+								aaa=false;
+							}
+
+						}
+					});
+				} else{
+					$("#username").css("border","1px solid red");
+
+					$("#td_error").attr("class","glyphicon glyphicon-remove");
+					$("#td_error").css({"display":"","color":"red"});
+					$("#td_error").text("用户名格式不正确（3-20位英文字符）");
+					aaa=false;
+				}
+				return aaa;
+			}
+			//校验密码
+			function password(){
+				//获取username的值
+				var password = $("#password").val();
+				//使用正则表达式验证
+				var flag=/^\w{8,20}$/.test(password);
+				//根据正则表达表达式，返回结果
+				$("#td_ps_error").css("display","");
+				if(flag){
+					$("#password").css("border","");
+
+					$("#td_ps_error").css("color","green");
+					$("#td_ps_error").attr("class","glyphicon glyphicon-ok");
+					$("#td_ps_error").text("密码可用");
+				}else {
+					$("#password").css("border","1px solid red");
+
+					$("#td_ps_error").css("color","red");
+					$("#td_ps_error").attr("class","glyphicon glyphicon-remove");
+					$("#td_ps_error").text("密码格式不正确（8-20位英文字符）");
+				}
+
+				return flag
+			}
+			//确认密码
+			function repassword(){
+				//获取username的值
+				var password = $("#password").val();
+				var repassword = $("#repassword").val();
+				//使用正则表达式验证
+				//根据正则表达表达式，返回结果
+				$("#td_re_error").css("display","");
+				if(password!=""&&repassword!=""){
+					$("#repassword").css("border","");
+
+					$("#td_re_error").css("color","green");
+					$("#td_re_error").attr("class","glyphicon glyphicon-ok");
+					$("#td_re_error").text("密码可用");
+					return true;
+				}else {
+					$("#repassword").css("border","1px solid red");
+
+					$("#td_re_error").css("color","red");
+					$("#td_re_error").attr("class","glyphicon glyphicon-remove");
+					$("#td_re_error").text("两次密码不一致");
+					return false;
+				}
+			}
+
+			//邮箱
+			function email(){
+				//获取email的值
+				var email = $("#email").val();
+
+				//使用正则表达式验证 2055569134@qq.com
+				var flag=/^\w+@\w+\.\w+$/.test(email);
+				//根据正则表达表达式，返回结果
+				$("#td_email_error").css("display","");
+				if(flag){
+					$("#email").css("border","");
+
+					$("#td_email_error").css("color","green");
+					$("#td_email_error").attr("class","glyphicon glyphicon-ok");
+					$("#td_email_error").text("邮箱可用");
+				}else {
+					$("#email").css("border","1px solid red");
+
+					$("#td_email_error").css("color","red");
+					$("#td_email_error").attr("class","glyphicon glyphicon-remove");
+					$("#td_email_error").text("邮箱格式不正确（2055569134@qq.com）");
+				}
+				return flag
+			}
+			//真实姓名
+			function checkName(){
+				var check_name =$("#check_name").val();
+				$("#td_name_error").css("display","");
+				if(check_name!=""){
+					$("#check_name").css("border","");
+
+					$("#td_name_error").css("color","green");
+					$("#td_name_error").attr("class","glyphicon glyphicon-ok");
+					$("#td_name_error").text("姓名可用");
+					return true;
+				}else {
+					$("#check_name").css("border","1px solid red");
+
+					$("#td_name_error").css("color","red");
+					$("#td_name_error").attr("class","glyphicon glyphicon-remove");
+					$("#td_name_error").text("姓名不能为空");
+					return false;
+				}
+			}
+			//手机号
+			function telephone(){
+				//获取email的值
+				var telephone = $("#telephone").val();
+
+				//使用正则表达式验证 2055569134@qq.com
+				var flag=/^(\(\d{3,4}\)|\d{3,4}-|\s)?\d{7,14}$/.test(telephone);
+				//根据正则表达表达式，返回结果
+				$("#td_phone_error").css("display","");
+				if(flag){
+					$("#telephone").css("border","");
+
+					$("#td_phone_error").css("color","green");
+					$("#td_phone_error").attr("class","glyphicon glyphicon-ok");
+					$("#td_phone_error").text("手机号可用");
+				}else {
+					$("#telephone").css("border","1px solid red");
+
+					$("#td_phone_error").css("color","red");
+					$("#td_phone_error").attr("class","glyphicon glyphicon-remove");
+					$("#td_phone_error").text("手机号格式不正确（15717990017）");
+				}
+				return flag
+			}
+			function checkDate(){
+				var date=$("#birthday").val();
+				var flag=/^\d{4}-\d{2}-\d{2}$/.test(date);
+				$("#td_date_error").css("display","");
+				if(flag){
+					$("#birthday").css("border","");
+
+					$("#td_date_error").css("color","green");
+					$("#td_date_error").attr("class","glyphicon glyphicon-ok");
+					$("#td_date_error").text("日期可用");
+				}else {
+					$("#birthday").css("border","1px solid red");
+
+					$("#td_date_error").css("color","red");
+					$("#td_date_error").attr("class","glyphicon glyphicon-remove");
+					$("#td_date_error").text("日期格式不正确");
+				}
+				return flag;
+			}
+
+            function code(){
+                var code=$("#code").val();
+                var flag=code=="";
+				$("#td_code_error").css("display","");
+                if(flag){
+					$("#code").css("border","1px solid red");
+
+					$("#td_code_error").css("color","red");
+					$("#td_code_error").attr("class","glyphicon glyphicon-remove");
+					$("#td_code_error").text("验证码不能为空");
+                }else{
+                	if (code.length>4){
+						$("#td_code_error").css("color","red");
+						$("#td_code_error").attr("class","glyphicon glyphicon-remove");
+						$("#td_code_error").text("验证码长度不能超过4位");
+						flag=true;
+					}else if (code.length<4){
+						$("#td_code_error").css("color","red");
+						$("#td_code_error").attr("class","glyphicon glyphicon-remove");
+						$("#td_code_error").text("验证码长度不能小于4位");
+						flag=true;
+					} else{
+						$("#code").css("border","");
+
+						$("#td_code_error").css("color","green");
+						$("#td_code_error").attr("class","glyphicon glyphicon-ok");
+						$("#td_code_error").text("验证码可用");
+						flag=false;
+					}
+
+				}
+                return !flag;
+            }
+            $(function () {
+				//提交表单时验证
+				$("#registerForm").submit(function () {
+					if(username()&&password()&&repassword()&&email()&&checkName()&&telephone()&&checkDate()&&code()){
+						$.post("/user/register",$(this).serialize(),function(data){
+							if(data.flag){
+								location.href="register_ok";
+							}else{
+								$("#div_error").css("display","");
+								$("#div_error").text(data.errorMsg);
+								$("#image").click();
+							}
+						},"json");
+					}
+					return false;
+				});
+				//失去焦点时验证
+				$("#username").blur(username);
+				$("#password").blur(password);
+				$("#repassword").blur(repassword);
+				$("#email").blur(email);
+				$("#check_name").blur(checkName);
+				$("#telephone").blur(telephone);
+				$("#birthday").blur(checkDate);
+				$("#code").blur(code);
+			});
+
+		</script>
+    </head>
+	<body>
+	<!--引入头部-->
+	<div id="header"></div>
+        <!-- 头部 end -->
+    	<div class="rg_layout" style="height: 700px;">
+    		<div class="rg_form clearfix" style="height: 660px;">
+    			<div class="rg_form_left">
+    				<p>新用户注册</p>
+    				<p>USER REGISTER</p>
+    			</div>
+
+    			<div class="rg_form_center">
+
+					<div class="alert alert-danger alert-dismissible" role="alert" id="div_error" style="display: none">
+						<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+
+					</div>
+					<!--注册表单-->
+    				<form id="registerForm" action="registerUser" method="post">
+						<!--提交处理请求的标识符-->
+						<input type="hidden" name="action" value="register">
+    					<table style="margin-top: 20px;">
+    						<tr>
+    							<td class="td_left" >
+									<label for="username"class="col-sm-2 control-label">用户名</label>
+    							</td>
+    							<td class="td_right">
+									<input type="text" class="form-control" id="username" name="username" placeholder="请输入用户名">
+								</td>
+								<td style="padding-left:5px;">
+									<span aria-hidden="true" style="display: none;" id="td_error"></span>
+								</td>
+							</tr>
+
+    						<tr>
+    							<td class="td_left">
+									<label for="password"class="col-sm-2 control-label">密&nbsp;码</label>
+    							</td>
+								<td class="td_right">
+									<input type="password" class="form-control" id="password" name="password" placeholder="请输入密码">
+								</td>
+								<td style="padding-left:5px;">
+									<span aria-hidden="true" style=";display: none;" id="td_ps_error"></span>
+								</td>
+
+    						</tr>
+
+							<tr>
+								<td class="td_left">
+									<label for="repassword" class="col-sm-2 control-label">确认密码</label>
+								</td>
+								<td class="td_right">
+									<input type="password" id="repassword" name="repassword" class="form-control" placeholder="请重复输入密码">
+								</td>
+								<td style="padding-left:5px;">
+									<span  aria-hidden="true" style="display: none;" id="td_re_error"></span>
+								</td>
+							</tr>
+
+    						<tr>
+    							<td class="td_left">
+									<label for="password"class="col-sm-2 control-label">Email</label>
+    							</td>
+    							<td class="td_right">
+    								<input type="text" id="email" name="email" placeholder="请输入Email">
+    							</td>
+								<td style="padding-left:5px;">
+									<span  aria-hidden="true" style="display: none;" id="td_email_error"></span>
+								</td>
+    						</tr>
+    						<tr>
+    							<td class="td_left">
+									<label for="password"class="col-sm-2 control-label">姓名</label>
+    							</td>
+    							<td class="td_right">
+    								<input type="text" id="check_name" name="name" placeholder="请输入真实姓名">
+    							</td>
+								<td style="padding-left:5px;">
+									<span aria-hidden="true" style="color: red;display: none;" id="td_name_error"></span>
+								</td>
+    						</tr>
+    						<tr>
+    							<td class="td_left">
+									<label for="password"class="col-sm-2 control-label">手机号</label>
+    							</td>
+    							<td class="td_right">
+    								<input type="text" id="telephone" name="telephone" placeholder="请输入您的手机号">
+    							</td>
+								<td style="padding-left:5px;">
+									<span  aria-hidden="true" style="display: none;" id="td_phone_error"></span>
+								</td>
+    						</tr>
+    						<tr>
+    							<td class="td_left">
+									<label for="password"class="col-sm-2 control-label">性别</label>
+    							</td>
+    							<td class="td_right gender">
+    								<input type="radio" id="sex" name="sex" value="男" checked> 男
+    								<input type="radio" name="sex" value="女"> 女
+    							</td>
+    						</tr>
+    						<tr>
+    							<td class="td_left">
+									<label for="password"class="col-sm-2 control-label">出生日期</label>
+    							</td>
+    							<td class="td_right">
+    								<input type="date" id="birthday" name="birthday" placeholder="年/月/日">
+    							</td>
+								<td style="padding-left:5px;">
+									<span  aria-hidden="true" style="display: none;" id="td_date_error"></span>
+								</td>
+    						</tr>
+    						<tr>
+    							<td class="td_left">
+									<label for="password"class="col-sm-2 control-label">验证码</label>
+    							</td>
+    							<td class="td_right check">
+    								<input type="text" id="code" name="code" class="check">
+    								<img src="sessionCode" height="32px" alt="" onclick="changeCheckCode(this)" id="image">
+									<script type="text/javascript">
+										//图片点击事件
+										function changeCheckCode(img) {
+											img.src="sessionCode?"+new Date().getTime();
+                                        }
+									</script>
+    							</td>
+                                <td style="padding-left:5px;">
+                                    <span  aria-hidden="true" style="display: none;" id="td_code_error"></span>
+                                </td>
+    						</tr>
+    						<tr>
+    							<td class="td_left"> 
+    							</td>
+    							<td class="td_right check"> 
+    								<input type="submit" class="submit" value="注册">
+									<span id="msg" style="color: red;"></span>
+    							</td>
+    						</tr>
+    					</table>
+    				</form>
+    			</div>
+    			<div class="rg_form_right">
+    				<p>
+    					已有账号？
+    					<a href="login.html">立即登录</a>
+    				</p>
+    			</div>
+    		</div>
+    	</div>
+        <!--引入尾部-->
+    	<div id="footer"></div>
+		<!--导入布局js，共享header和footer-->
+		<script type="text/javascript" src="statics/js/include.js"></script>
+    	
+    </body>
+</html>

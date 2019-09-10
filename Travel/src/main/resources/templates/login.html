@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>旅游网-登录</title>
+    <link rel="stylesheet" type="text/css" href="statics/css/common.css">
+    <link rel="stylesheet" type="text/css" href="statics/css/login.css">
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+      <!--导入angularJS文件-->
+    <script src="statics/js/angular.min.js"></script>
+	<!--导入jquery-->
+	<script src="statics/js/jquery-3.3.1.js"></script>
+	<script type="text/javascript" th:inline="javascript">
+
+		function checkUsername(){
+			var username=$("#username").val();
+			var flag=username=="";
+			if(flag){
+				$("#div_error").text("用户名不能为空");
+				$("#div_error").css({"display":""});
+			}else{
+				$("#div_error").css({"display":"none"});
+			}
+			return !flag;
+		}
+
+		function checkPassword(){
+			var passwrod=$("#password").val();
+			var flag=passwrod=="";
+			if(flag){
+				$("#div_error").text("密码不能为空");
+				$("#div_error").css({"display":""});
+			}else{
+				$("#div_error").css({"display":"none"});
+			}
+			return !flag;
+		}
+		function checkCode(){
+			var code=$("#code").val();
+			var flag=code=="";
+			if(flag){
+				$("#div_error").text("验证码不能为空");
+				$("#div_error").css({"display":""});
+			}else{
+				$("#div_error").css({"display":"none"});
+			}
+			return !flag;
+		}
+		$(function () {
+
+			$("#loginForm").submit(function () {
+				if(checkUsername()&&checkPassword()&&checkCode()){
+					$.post("/user/login",$("#loginForm").serialize(),function (date) {
+						if(date.flag){
+							location.href="index";
+						}else{
+							$("#div_error").css({"display":""});
+							$("#div_error").text(date.errorMsg);
+							$("#image").click();
+						}
+					},"json");
+				}
+				return false;
+			});
+
+			$("#username").blur(checkUsername);
+			$("#password").blur(checkPassword);
+			$("#check").blur(checkCode);
+
+		});
+	</script>
+</head>
+
+<body>
+<!--引入头部-->
+<div id="header"></div>
+    <!-- 头部 end -->
+    <section id="login_wrap">
+        <div class="fullscreen-bg" style="background: url(statics/images/login_bg.jpg) no-repeat center center fixed;height: 600px; ">
+        	
+        </div>
+        <div class="login-box">
+        	<div class="title">
+        		<span>欢迎登录旅游账户</span>
+        	</div>
+
+        	<div class="login_inner">
+                <!--登录错误提示消息-->
+                <div class="alert alert-error alert-dismissible" role="alert" id="div_error" style="display: none;text-align: center">
+                </div>
+
+				<form style="margin-top: 10px;" action="" method="post" id="loginForm">
+					<div class="form-group">
+						<input type="text" class="form-control" id="username" placeholder="username" name="username">
+					</div>
+					<div class="form-group">
+						<input type="password" class="form-control" id="password" placeholder="Password" name="password">
+					</div>
+
+					<div class="verify">
+						<div class="form-group">
+							<input type="text" class="form-control" id="code" placeholder="Code" name="code">
+						</div>
+						<span><img src="sessionCode" alt="" onclick="changeCheckCode(this)" id="image"></span>
+						<script type="text/javascript">
+							//图片点击事件
+							function changeCheckCode(img) {
+								img.src="sessionCode?"+new Date().getTime();
+							}
+						</script>
+					</div>
+
+					<div class="submit_btn">
+						<button type="submit">登录</button>
+						<div class="auto_login">
+							<input type="checkbox" name="rememberMe" class="checkbox">
+                            <span>自动登录</span>
+						</div>
+					</div>
+				</form>
+
+        		<div class="reg">没有账户？<a href="register">立即注册</a></div>
+        	</div>
+        </div>
+    </section>
+    <!--引入尾部-->
+    <div id="footer"></div>
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="statics/js/jquery-1.11.0.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="statics/js/bootstrap.min.js"></script>
+    <!--导入布局js，共享header和footer-->
+    <script src="statics/js/include.js"></script>
+</body>
+
+</html>

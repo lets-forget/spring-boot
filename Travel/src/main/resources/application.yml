@@ -1,0 +1,19 @@
+server:
+  port: 80
+spring:
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://rm-m5eaj14505m3q4v4gdo.mysql.rds.aliyuncs.com/travel
+    username: kangwen
+    password: Kang1234
+  thymeleaf:
+    cache: false
+mybatis:
+  type-aliases-package: com.kang.bean
+  configuration:
+    map-underscore-to-camel-case: true
+pagehelper:
+  helper-dialect: mysql
+logging:  #日志
+  level:
+    com.kang: debug

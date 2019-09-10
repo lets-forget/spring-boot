@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>我的收藏</title>
+        <link href="statics/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="statics/css/common.css">
+        <link rel="stylesheet" href="statics/css/index.css">
+        <script src="statics/js/sweetalert.min.js"></script>
+        <link rel="stylesheet" href="statics/css/sweetalert.css">
+       <style>
+           .tab-content .row>div {
+            margin-top: 16px;
+           } 
+           .tab-content {
+            margin-bottom: 36px;
+           }
+       </style>
+
+<script src="statics/js/jquery-3.3.1.js"></script>
+        <script>
+            $(function () {
+                load(null);
+            });
+            //删除收藏
+            function deleterid(rid) {
+                swal({
+                    title: "您确定要删除吗？",
+                    text: "您确定要删除这条数据？",
+                    type: "warning",
+                    showCancelButton: true,
+                    closeOnConfirm: false,
+                    confirmButtonText: "是的，我要删除",
+                    confirmButtonColor: "#ec6c62"
+                }, function() {
+                    $.post("/favorite/deleteByRid",{"rid":rid},function (data) {
+                        if(data){
+                            load(1);
+                            swal("操作成功!", "已成功删除数据！", "success");
+                        }else{
+                            swal("操作失败", "删除操作失败了!", "error");
+                        }
+                    },"json");
+                });
+            }
+            function load(currentPage){
+                $.post("/favorite/mycollect",{"currentPage":currentPage},function (data) {
+
+                    var benig;
+                    var end;
+                    if (data.pageInfo.pages<10){
+                        benig=1;
+                        end=data.pageInfo.pages;
+                    }else{
+                        benig=data.pageInfo.pageNum-5;
+                        end=data.pageInfo.pageNum+4;
+
+                        //判断开始的位置是否小于或等于0
+                        if (benig<=0){
+                            benig=1;
+                            end=benig+9;
+                        }
+                        //判断结束的位置是否大于总页数
+                        if (end>data.pageInfo.pages) {
+                            end=data.pageInfo.pageNum;
+                            benig=end-9;
+                        }
+                    }
+
+                    var page_list='<li onclick="load('+1+')"><a href="javascript:void(0)">首页</a></li>';
+                    if (data.pageInfo.isFirstPage) {
+                        page_list+='<li class="threeword"><a href="javascript:void(0)">上一页</a></li>';
+                    }else{
+                        page_list+='<li class="threeword" onclick="load('+(data.pageInfo.pageNum-1)+')"><a href="javascript:void(0)">上一页</a></li>';
+                    }
+
+                    for (var i = benig; i <=end; i++) {
+                        if (data.pageInfo.pageNum==i)
+                            page_list+='<li class="curPage"><a href="javascript:void(0)">'+i+'</a></li>';
+                        else
+                            page_list+='<li onclick="load('+i+')"><a href="javascript:void(0)">'+i+'</a></li>';
+                    }
+
+                    if (data.pageInfo.isLastPage) {
+                        page_list+='<li class="threeword"><a href="javascript:void(0);">下一页</a></li>';
+                    }else{
+                        page_list+='<li class="threeword" onclick="load('+(data.pageInfo.pageNum+1)+')"><a href="javascript:void(0);">下一页</a></li>';
+                    }
+
+                    page_list+='<li class="threeword" onclick="load('+data.pageInfo.pages+')"><a href="javascript:;">末页</a></li>';
+
+                    $("#route_page_ul").html(page_list);
+
+                    var route_list='';
+                    for (var i = 0; i < data.pageList.length; i++) {
+                        route_list+='<div class="col-md-3">\n' +
+                            '         <a href="route_detail?rid='+data.pageList[i].rid+'">\n' +
+                            '             <img src="'+data.pageList[i].rimage+'" alt="">\n' +
+                            '</a>\n' +
+                            '             <div class="has_border">\n' +
+                            '                 <h3>'+data.pageList[i].rname+'</h3>\n' +
+                            '                            <div class="price">网付价<em>￥</em><strong style="color: red;">'+data.pageList[i].price+'</strong><em>起</em>' +
+                            '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="button" class="btn btn-danger" id="deleterid" value="删&nbsp;&nbsp;&nbsp;除" onclick="deleterid('+data.pageList[i].rid+')"></div>\n' +
+                            '                                        </div>\n' +
+
+                            ' </div>';
+                    }
+                    $(".row").html(route_list);
+                },"json");
+            }
+        </script>
+    </head>
+    <body>
+    <!--引入头部-->
+    <div id="header"></div>
+         <!-- 排行榜 start-->
+        <section id="content">            
+            <section class="hemai_jx">
+                <div class="jx_top">
+                    <div class="jx_tit">
+                        <img src="statics/images/icon_5.jpg" alt="">
+                        <span>我的收藏</span>
+                    </div>                    
+                </div>
+                <div class="jx_content">
+                    <!-- Tab panes -->
+                    <div class="tab-content">
+                        <div role="tabpanel" class="tab-pane active" id="home">
+                            <div class="row">
+
+
+                            </div>
+                        </div>                       
+                    </div>
+                </div>
+                <div class="pageNum">
+                    <ul id="route_page_ul">
+
+                    </ul>
+                </div>
+            </section>                      
+        </section>
+        <!-- 排行榜 end-->
+    	
+         <!--引入尾部-->
+    	<div id="footer"></div>
+        <!--导入布局js，共享header和footer-->
+        <script type="text/javascript" src="statics/js/include.js"></script>
+    </body>
+</html>

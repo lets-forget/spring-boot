@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>收藏排行榜</title>
+        <link rel="stylesheet" type="text/css" href="statics/css/common.css">
+        <link rel="stylesheet" type="text/css" href="statics/css/ranking-list.css">
+        <script src="statics/js/jquery-3.3.1.js"></script>
+        <script>
+            $(function () {
+                load(null);
+            });
+            function load(currentPage){
+                $.post("/route/collectCount",{"currentPage":currentPage},function (data) {
+
+                    var benig;
+                    var end;
+                    if (data.pageInfo.pages<10){
+                        benig=1;
+                        end=data.pageInfo.pages;
+                    }else{
+                        benig=data.pageInfo.pageNum-5;
+                        end=data.pageInfo.pageNum+4;
+
+                        //判断开始的位置是否小于或等于0
+                        if (benig<=0){
+                            benig=1;
+                            end=benig+9;
+                        }
+                        //判断结束的位置是否大于总页数
+                        if (end>data.pageInfo.pages) {
+                            end=data.pageInfo.pageNum;
+                            benig=end-9;
+                        }
+                    }
+
+                    var page_list='<li onclick="load('+1+')"><a href="javascript:void(0)">首页</a></li>';
+                    if (data.pageInfo.isFirstPage) {
+                        page_list+='<li class="threeword"><a href="javascript:void(0)">上一页</a></li>';
+                    }else{
+                        page_list+='<li class="threeword" onclick="load('+(data.pageInfo.pageNum-1)+')"><a href="javascript:void(0)">上一页</a></li>';
+                    }
+
+                    for (var i = benig; i <=end; i++) {
+                        if (data.pageInfo.pageNum==i)
+                            page_list+='<li class="curPage"><a href="javascript:void(0)">'+i+'</a></li>';
+                        else
+                            page_list+='<li onclick="load('+i+')"><a href="javascript:void(0)">'+i+'</a></li>';
+                    }
+
+                    if (data.pageInfo.isLastPage) {
+                        page_list+='<li class="threeword"><a href="javascript:void(0);">下一页</a></li>';
+                    }else{
+                        page_list+='<li class="threeword" onclick="load('+(data.pageInfo.pageNum+1)+')"><a href="javascript:void(0);">下一页</a></li>';
+                    }
+
+                    page_list+='<li class="threeword" onclick="load('+data.pageInfo.pages+')"><a href="javascript:;">末页</a></li>';
+
+                    $("#route_page_ul").html(page_list);
+
+                    var route_list='';
+                    for (var i = 0; i < data.pageList.length; i++) {
+                        route_list+='<li>';
+                        route_list+='  <span class="num">'+(i+1)+'</span>\n' +
+                            '      <a href="route_detail?rid='+data.pageList[i].rid+'"><img src="'+data.pageList[i].rimage+'" alt=""></a>\n' +
+                            '     <h4><a href="route_detail.html">'+data.pageList[i].rname+'</a></h4>\n' +
+                            '     <p>\n' +
+                            '        <b class="price">&yen;<span>'+data.pageList[i].price+'</span>起</b>\n' +
+                            '       <span class="shouchang">已收藏'+data.pageList[i].count+'次</span>\n' +
+                            '    </p>';
+                        route_list+='</li>';
+                    }
+                    $("#routelist").html(route_list);
+                },"json");
+            }
+
+        </script>
+    </head>
+    <body>
+    <!--引入头部-->
+    <div id="header"></div>
+        <div class="contant">
+            <div class="list clearfix">
+                <ul id="routelist">
+
+                </ul>
+            </div>
+            <div class="pageNum">
+                <ul id="route_page_ul">
+
+                </ul>
+            </div>
+        </div>
+    	
+         <!--导入底部-->
+   		 <div id="footer"></div>
+    <!--导入布局js，共享header和footer-->
+    <script type="text/javascript" src="statics/js/include.js"></script>
+    </body>
+</html>
